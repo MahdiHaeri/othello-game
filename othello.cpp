@@ -27,6 +27,10 @@ public:
     }
   }
 
+  int change_charater_to_number(char charater) {
+    return int(charater - 'A');
+  }
+
   void print_map() {
     cout << "  ";
     for (int i = 0; i < SIZE; i++) {
