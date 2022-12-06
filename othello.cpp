@@ -57,6 +57,17 @@ public:
     map = _map;
   }
 
+  int go(int i, int j, int p, int q, int k) {
+    if (!is_there_in_map(i + p, j + q)) {
+      return -100;
+    } else if (map->map[i + p][j + q] == BLANK || map->map[i + p][j + q] == TARGET) {
+      return -100;
+    } else if (map->map[i + p][j + q] == player_turn()) {
+      return k;
+    }
+    return go(i + p, j + q, p, q, k + 1);
+  }
+
   bool is_placeable(int i, int j) {
     for (int p = -1; p <= 1; p++) {
       for (int q = -1; q <= 1; q++) {
@@ -78,6 +89,23 @@ public:
     }
   }
 
+  void turn_discs(int i, int j) {
+    for (int p = -1; p <= 1; p++) {
+      for (int q = -1; q <= 1; q++) {
+        int go_direction = go(i, j, p, q, 0);
+        if (go_direction > 0) {
+          int x = i, y = j;
+          for (int k = 1; k <= go_direction; k++) {
+            x += p;
+            y += q;
+            map->map[x][y] = player_turn();
+          }
+        }
+      }
+    }
+  }
+
+
   void update_placeable() {
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
@@ -90,16 +118,6 @@ public:
     set_placeables();
   }
 
-  int go(int i, int j, int p, int q, int k) {
-    if (!is_there_in_map(i + p, j + q)) {
-      return -100;
-    } else if (map->map[i + p][j + q] == BLANK || map->map[i + p][j + q] == TARGET) {
-      return -100;
-    } else if (map->map[i + p][j + q] == player_turn()) {
-      return k;
-    }
-    return go(i + p, j + q, p, q, k + 1);
-  }
 
   bool is_there_in_map(int i, int j) {
     if (i >= 0 && i < SIZE && j >= 0 && j < SIZE) {
@@ -113,13 +131,12 @@ public:
   }
 
   void print_info() {
-    cout << "turn: " << turn << " Player: " << player_turn() << endl;
-    cout << "player_score_1: " << player_score_1 << endl << "player_score_2: " << player_score_2 << endl;
+    cout << "turn: " << turn << " Player: " << player_turn() << " player_score_1: " << player_score_1 << " player_score_2: " << player_score_2 << endl;
   }
 
   int player_score_1 = 0;
   int player_score_2 = 0;
-  int turn = 0;
+  int turn = 1;
   Map *map;
 private:
 };
@@ -136,6 +153,8 @@ public:
       print_game();
       int i = get_input_i();
       int j = get_input_j();
+      game_control->turn_discs(i, j);
+      map->insert(game_control->player_turn(), i, j);
       game_control->turn++;
     }
   }
@@ -147,7 +166,7 @@ public:
   int get_input_i() {
     int i;
     cin >> i;
-    return i;
+    return i - 1;
   }
 
   int get_input_j() {
@@ -158,8 +177,8 @@ public:
   }
 
   void print_game() {
-    game_control->update_placeable();
     game_control->print_info();
+    game_control->update_placeable();
     map->print_map();
   }
 
