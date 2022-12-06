@@ -68,7 +68,17 @@ public:
         }
       }
     }
-    return false; 
+    return false;
+  }
+
+  void show_placeable() {
+    for (int i = 0; i < SIZE; i++) {
+      for (int j = 0; j < SIZE; j++) {
+        if (map->map[i][j] == BLANK && is_placeable(i, j)) {
+          map->insert(TARGET, i, j);
+        }
+      }
+    }
   }
 
   int go(int i, int j, int p, int q, int k) {
@@ -101,6 +111,17 @@ public:
 private:
 };
 
+class Othello_game {
+public:
+  Othello_game() {
+    map = new Map();
+    game_control = new Game_control(map);
+  }
+  Map *map;
+  Game_control *game_control;
+private:
+
+};
 
 
 int main(int argc, char const *argv[]) {
