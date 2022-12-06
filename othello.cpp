@@ -71,7 +71,7 @@ public:
     return false;
   }
 
-  void show_placeable() {
+  void set_placeables() {
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
         if (map->map[i][j] == BLANK && is_placeable(i, j)) {
@@ -84,7 +84,7 @@ public:
   int go(int i, int j, int p, int q, int k) {
     if (!is_there_in_map(i + p, j + q)) {
       return -100;
-    } else if (map->map[i][j] == BLANK) {
+    } else if (map->map[i + p][j + q] == BLANK || map->map[i + p][j + q] == TARGET) {
       return -100;
     } else if (map->map[i + p][j + q] == player_turn()) {
       return k;
@@ -117,6 +117,12 @@ public:
     map = new Map();
     game_control = new Game_control(map);
   }
+
+  void print_map() {
+    game_control->set_placeables();
+    map->print_map();
+  }
+
   Map *map;
   Game_control *game_control;
 private:
@@ -125,8 +131,7 @@ private:
 
 
 int main(int argc, char const *argv[]) {
-  Map map;
-
-  map.print_map();
+  Othello_game game;
+  game.print_map();
   return 0;
 }
