@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 using namespace std;
 
@@ -8,6 +9,30 @@ using namespace std;
 #define PLAYER_2 'R'
 #define BLANK '-'
 #define TARGET '*'
+
+//the following are UBUNTU/LINUX, and MacOS ONLY terminal color codes.
+#define __RESET   "\033[0m"
+#define __BLACK   "\033[30m"      /* Black */
+#define __RED     "\033[31m"      /* Red */
+#define __GREEN   "\033[32m"      /* Green */
+#define __YELLOW  "\033[33m"      /* Yellow */
+#define __BLUE    "\033[34m"      /* Blue */
+#define __MAGENTA "\033[35m"      /* Magenta */
+#define __CYAN    "\033[36m"      /* Cyan */
+#define __WHITE   "\033[37m"      /* White */
+#define __BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+#define __BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+#define __BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+#define __BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+#define __BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+#define __BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+#define __BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+#define __BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
+//!
+
+#define __PLAYER_COLOR_1 __BLUE
+#define __PLAYER_COLOR_2 __RED
+#define __BORDER_COLOR __BOLDWHITE
 
 class Map {
 public:
@@ -31,13 +56,22 @@ public:
   void print_map() {
     cout << "  ";
     for (int i = 0; i < SIZE; i++) {
-      cout << char('A' + i ) << ' ';
+
+      cout << __BORDER_COLOR << char('A' + i ) << ' ' << __RESET; // print by white color
     }
     cout << endl;
     for (int i = 0; i < SIZE; i++) {
-      cout << i + 1 << ' ';
+      cout << __BORDER_COLOR << i + 1 << ' ' << __RESET; //  print by white color
       for (int j = 0; j < SIZE; j++) {
+        if (map[i][j] == PLAYER_1) {
+          cout << __PLAYER_COLOR_1;
+        } else if (map[i][j] == PLAYER_2) {
+          cout << __PLAYER_COLOR_2;
+        } else if (map[i][j] == TARGET) {
+          cout << __GREEN;
+        }
         cout << map[i][j] << ' ';
+        cout << __RESET;
       }
       cout << endl;
     }
@@ -131,7 +165,7 @@ public:
   }
 
   void print_info() {
-    cout << "turn: " << turn << " Player: " << player_turn() << " player_score_1: " << player_score_1 << " player_score_2: " << player_score_2 << endl;
+    cout << "turn: " << turn << " Player: " << player_turn() <<  __PLAYER_COLOR_1  << " player_score_1: " << player_score_1 << __RESET << __PLAYER_COLOR_2 << " player_score_2: " << player_score_2  << __RESET << endl;
   }
 
   int player_score_1 = 0;
