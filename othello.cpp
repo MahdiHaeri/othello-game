@@ -27,9 +27,6 @@ public:
     }
   }
 
-  int change_charater_to_number(char charater) {
-    return int(charater - 'A');
-  }
 
   void print_map() {
     cout << "  ";
@@ -81,6 +78,18 @@ public:
     }
   }
 
+  void update_placeable() {
+    for (int i = 0; i < SIZE; i++) {
+      for (int j = 0; j < SIZE; j++) {
+        if (map->map[i][j] == TARGET) {
+          map->map[i][j] = BLANK;
+        }
+      }
+    }
+
+    set_placeables();
+  }
+
   int go(int i, int j, int p, int q, int k) {
     if (!is_there_in_map(i + p, j + q)) {
       return -100;
@@ -88,9 +97,8 @@ public:
       return -100;
     } else if (map->map[i + p][j + q] == player_turn()) {
       return k;
-    } else {
-      go(i + p, j + q, p, q, k + 1);
     }
+    return go(i + p, j + q, p, q, k + 1);
   }
 
   bool is_there_in_map(int i, int j) {
@@ -102,6 +110,11 @@ public:
 
   char player_turn() {
     return turn % 2 == 0 ? PLAYER_1 : PLAYER_2;
+  }
+
+  void print_info() {
+    cout << "turn: " << turn << " Player: " << player_turn() << endl;
+    cout << "player_score_1: " << player_score_1 << endl << "player_score_2: " << player_score_2 << endl;
   }
 
   int player_score_1 = 0;
@@ -118,10 +131,38 @@ public:
     game_control = new Game_control(map);
   }
 
-  void print_map() {
-    game_control->set_placeables();
+  void start_game() {
+    while (game_control->turn < 60) {
+      print_game();
+      int i = get_input_i();
+      int j = get_input_j();
+      game_control->turn++;
+    }
+  }
+
+  int change_charater_to_number(char charater) {
+    return int(charater - 'A');
+  }
+
+  int get_input_i() {
+    int i;
+    cin >> i;
+    return i;
+  }
+
+  int get_input_j() {
+    char _j;
+    cin >> _j;
+    int j = change_charater_to_number(_j);
+    return j;
+  }
+
+  void print_game() {
+    game_control->update_placeable();
+    game_control->print_info();
     map->print_map();
   }
+
 
   Map *map;
   Game_control *game_control;
@@ -132,6 +173,6 @@ private:
 
 int main(int argc, char const *argv[]) {
   Othello_game game;
-  game.print_map();
+  game.start_game();
   return 0;
 }
