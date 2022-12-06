@@ -1,11 +1,15 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <vector>
+#include <time.h>
+#include <random>
 
 using namespace std;
 
 #define SIZE 8
-#define PLAYER_1 'B'
+#define MAX_TURN (SIZE * SIZE - 4)
+#define PLAYER_1 'Y'
 #define PLAYER_2 'R'
 #define BLANK '-'
 #define TARGET '*'
@@ -30,8 +34,8 @@ using namespace std;
 #define __BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 //!
 
-#define __PLAYER_COLOR_1 __BLUE
-#define __PLAYER_COLOR_2 __RED
+#define __PLAYER_COLOR_1 __YELLOW
+#define __PLAYER_COLOR_2 __BOLDRED
 #define __BORDER_COLOR __BOLDWHITE
 
 class Map {
@@ -118,6 +122,7 @@ public:
       for (int j = 0; j < SIZE; j++) {
         if (map->map[i][j] == BLANK && is_placeable(i, j)) {
           map->insert(TARGET, i, j);
+          targets.push_back(pair(i, j));
         }
       }
     }
@@ -148,6 +153,7 @@ public:
         }
       }
     }
+    targets.clear();
 
     set_placeables();
   }
@@ -161,17 +167,18 @@ public:
   }
 
   char player_turn() {
-    return turn % 2 == 0 ? PLAYER_1 : PLAYER_2;
+    return turn % 2 == 0 ? PLAYER_2 : PLAYER_1;
   }
 
   void print_info() {
     cout << "turn: " << turn << " Player: " << player_turn() <<  __PLAYER_COLOR_1  << " player_score_1: " << player_score_1 << __RESET << __PLAYER_COLOR_2 << " player_score_2: " << player_score_2  << __RESET << endl;
   }
 
-  int player_score_1 = 0;
-  int player_score_2 = 0;
+  int player_score_1 = 2;
+  int player_score_2 = 2;
   int turn = 1;
   Map *map;
+  vector<pair<int, int>> targets;
 private:
 };
 
@@ -183,10 +190,21 @@ public:
   }
 
   void start_game() {
-    while (game_control->turn < 60) {
+    while (game_control->turn <= MAX_TURN) {
+      system("clear");
       print_game();
-      int i = get_input_i();
-      int j = get_input_j();
+      int i, j;
+      if (game_control->player_turn() == PLAYER_2) {
+        cout << "please wait... " << endl;
+        system("sleep 2");
+        pair<int, int> random_choice = choice_random();
+        i = random_choice.first;
+        j = random_choice.second;
+      } else {
+        i = get_input_i();
+        j = get_input_j();
+      }
+
       game_control->turn_discs(i, j);
       map->insert(game_control->player_turn(), i, j);
       game_control->turn++;
@@ -216,6 +234,10 @@ public:
     map->print_map();
   }
 
+  pair<int, int> choice_random() {
+    int random = rand() % game_control->targets.size();
+    return game_control->targets[random];
+  }
 
   Map *map;
   Game_control *game_control;
@@ -223,8 +245,8 @@ private:
 
 };
 
-
 int main(int argc, char const *argv[]) {
+  srand(time(NULL));
   Othello_game game;
   game.start_game();
   return 0;
