@@ -133,6 +133,7 @@ public:
       for (int q = -1; q <= 1; q++) {
         int go_direction = go(i, j, p, q, 0);
         if (go_direction > 0) {
+          calculate_scores(go_direction);
           int x = i, y = j;
           for (int k = 1; k <= go_direction; k++) {
             x += p;
@@ -141,6 +142,16 @@ public:
           }
         }
       }
+    }
+  }
+
+  void calculate_scores(int score) {
+    if (player_turn() == PLAYER_1) {
+      player_score_1 += score;
+      player_score_2 -= score;
+    } else {
+      player_score_1 -= score;
+      player_score_2 += score;
     }
   }
 
@@ -170,8 +181,16 @@ public:
     return turn % 2 == 0 ? PLAYER_2 : PLAYER_1;
   }
 
+  string player_color() {
+    if (player_turn() == PLAYER_1) {
+      return __PLAYER_COLOR_1;
+    } else {
+      return __PLAYER_COLOR_2;
+    }
+  }
+
   void print_info() {
-    cout << "turn: " << turn << " Player: " << player_turn() <<  __PLAYER_COLOR_1  << " player_score_1: " << player_score_1 << __RESET << __PLAYER_COLOR_2 << " player_score_2: " << player_score_2  << __RESET << endl;
+    cout << "turn: " << turn << " Player: " << player_color() << player_turn() << __RESET <<  __PLAYER_COLOR_1  << " player_score_1: " << player_score_1 << __RESET << __PLAYER_COLOR_2 << " player_score_2: " << player_score_2  << __RESET << endl;
   }
 
   int player_score_1 = 2;
@@ -207,6 +226,11 @@ public:
 
       game_control->turn_discs(i, j);
       map->insert(game_control->player_turn(), i, j);
+      if (game_control->player_turn() == PLAYER_1) {
+        game_control->player_score_1++;
+      } else {
+        game_control->player_score_2++;
+      }
       game_control->turn++;
     }
   }
