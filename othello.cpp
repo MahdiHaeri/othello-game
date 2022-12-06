@@ -206,7 +206,7 @@ public:
   Othello_game() {
     map = new Map();
     game_control = new Game_control(map);
-  }
+  } 
 
   void start_game() {
     while (game_control->turn <= MAX_TURN) {
@@ -214,7 +214,7 @@ public:
       print_game();
       int i, j;
       if (game_control->player_turn() == PLAYER_2) {
-        cout << "please wait... " << endl;
+        cout << "please wait for bot... " << endl;
         system("sleep 2");
         pair<int, int> random_choice = choice_random();
         i = random_choice.first;
