@@ -128,6 +128,15 @@ public:
     }
   }
 
+  bool is_there_in_targets(int i, int j) {
+    for (int k = 0; k < targets.size(); k++) {
+      if (targets[k].first == i && targets[k].second == j) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   void turn_discs(int i, int j) {
     for (int p = -1; p <= 1; p++) {
       for (int q = -1; q <= 1; q++) {
@@ -206,7 +215,7 @@ public:
   Othello_game() {
     map = new Map();
     game_control = new Game_control(map);
-  } 
+  }
 
   void start_game() {
     while (game_control->turn <= MAX_TURN) {
@@ -215,13 +224,18 @@ public:
       int i, j;
       if (game_control->player_turn() == PLAYER_2) {
         cout << "please wait for bot... " << endl;
-        system("sleep 2");
+        system("sleep 1.5");
         pair<int, int> random_choice = choice_random();
         i = random_choice.first;
         j = random_choice.second;
       } else {
         i = get_input_i();
         j = get_input_j();
+        if (!game_control->is_there_in_targets(i, j)) {
+          cout << "Incorrect intput! Please try again." << endl;
+          system("sleep .5");
+          start_game();
+        }
       }
 
       game_control->turn_discs(i, j);
