@@ -222,7 +222,7 @@ public:
       system("clear");
       print_game();
       int i, j;
-      if (game_control->player_turn() == PLAYER_2) {
+      if (game_control->player_turn() == PLAYER_2 /* || game_control->player_turn() == PLAYER_1 */) {
         cout << "please wait for bot... " << endl;
         system("sleep 1.5");
         pair<int, int> random_choice = choice_random();
