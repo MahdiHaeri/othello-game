@@ -1,6 +1,4 @@
-# othello_game_for_ubuntu_OS
-I make othello game for practice in programing 
-It still is not complete
+# othello_game
 
 ![image](https://user-images.githubusercontent.com/73737391/218685121-0ac9346c-c251-4836-ba05-12c97188bf2d.png)
 
